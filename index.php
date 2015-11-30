@@ -23,22 +23,26 @@ use DSLPAL\DSLValidator;
 
 $fluent = new DSLValidator;
 
-$res = $fluent->length(['min' => 5, 'max' => 20])
-              ->notBlank()
-              ->email()
-              ->validate('teste@gmail.com')
-;
+$email = $fluent->length(5, 20)
+                ->notBlank()
+                ->email()
+         ->factory();
 
-var_dump($res->count());
+var_dump($email->validate('leo@teste.com')->count());
+var_dump($email->validate('wrongemail')->count());
 
 $fluent->collection([
-    'nome' => $fluent->length(['min' => 5])
-                     ->type('string')
-                    ->end(),
-    'email' => $fluent->email()
-                    ->end(),
-    'sexo' => $fluent->choice(['M', 'F'])
-                    ->end()
+    'nome' => $fluent
+                ->type('string')
+                ->length(5)
+              ->end(),
+    'email' => $fluent
+                 ->email()
+               ->end(),
+    'sexo' => $fluent
+                ->type('string')
+                ->choice(['M', 'F'])
+              ->end()
 ]);
 
 $res = $fluent->validate([
