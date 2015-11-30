@@ -8,6 +8,7 @@
 
 namespace DSLPAL;
 
+use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Validation;
 
 /**
@@ -34,22 +35,33 @@ class DSLValidator
 
     public function __call($constraint, $parameters)
     {
-        $class = self::CONSTRAINT_NAMESPACE . ucfirst($constraint);
-        $refClass = new \ReflectionClass($class);
-        $this->assertList[] = $refClass->newInstanceArgs($parameters);
+        $this->assertList[] = $this->getConstraint($constraint, $parameters);
         return $this;
     }
 
     public function length($min = null, $max = null)
     {
         $options = [];
-        if (null !== $min) {
+        if (null != $min) {
             $options['min'] = $min;
         }
-        if (null !== $min) {
+        if (null != $max) {
             $options['max'] = $max;
         }
-        return $this->__call(__FUNCTION__, $options);
+        return $this->__call(__FUNCTION__, [$options]);
+    }
+
+    public function optional()
+    {
+        $this->assertList = $this->getConstraint(__FUNCTION__, [$this->assertList]);
+        return $this;
+    }
+
+    protected function getConstraint($constraint, $parameters)
+    {
+        $class = self::CONSTRAINT_NAMESPACE . ucfirst($constraint);
+        $refClass = new \ReflectionClass($class);
+        return $refClass->newInstanceArgs($parameters);
     }
 
     public function collection(array $asserts)
