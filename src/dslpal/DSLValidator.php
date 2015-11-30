@@ -34,7 +34,7 @@ class DSLValidator
     public function collection(array $asserts)
     {
         $collection = self::CONSTRAINT_NAMESPACE . 'Collection';
-        $this->assertList = new $collection($asserts);
+        return $this->assertList = new $collection($asserts);
     }
 
     public function validate($value)
