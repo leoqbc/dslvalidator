@@ -47,4 +47,6 @@ $res = $fluent->validate([
     'sexo' => 'N' // Wrong!
 ]);
 
-var_dump($res->count());
+foreach($res as $error) {
+    echo $error . '<br>';
+}
