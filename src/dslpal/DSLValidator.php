@@ -49,7 +49,7 @@ class DSLValidator
         if (null !== $min) {
             $options['max'] = $max;
         }
-        return $this->__call(__METHOD__, $options);
+        return $this->__call(__FUNCTION__, $options);
     }
 
     public function collection(array $asserts)
