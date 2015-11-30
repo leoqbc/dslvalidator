@@ -10,6 +10,15 @@ namespace DSLPAL;
 
 use Symfony\Component\Validator\Validation;
 
+/**
+ * Class DSLValidator
+ * @package DSLPAL
+ *
+ * @method DSLValidator notBlank()
+ * @method DSLValidator email()
+ * @method DSLValidator type($type)
+ * @method DSLValidator choice(array $choice)
+ */
 class DSLValidator
 {
     protected $assertList;
@@ -31,6 +40,18 @@ class DSLValidator
         return $this;
     }
 
+    public function length($min = null, $max = null)
+    {
+        $options = [];
+        if (null !== $min) {
+            $options['min'] = $min;
+        }
+        if (null !== $min) {
+            $options['max'] = $max;
+        }
+        return $this->__call(__METHOD__, $options);
+    }
+
     public function collection(array $asserts)
     {
         $collection = self::CONSTRAINT_NAMESPACE . 'Collection';
@@ -40,7 +61,6 @@ class DSLValidator
     public function validate($value)
     {
         $violations = $this->validator->validate($value, $this->assertList);
-        $this->end();
         return $violations;
     }
 
@@ -49,5 +69,12 @@ class DSLValidator
         $assertList = $this->assertList;
         $this->assertList = null;
         return $assertList;
+    }
+
+    public function factory()
+    {
+        $clone = clone $this;
+        $this->end();
+        return $clone;
     }
 }
