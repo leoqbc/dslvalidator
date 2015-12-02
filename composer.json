@@ -2,7 +2,8 @@
     "name": "leowise",
     "autoload" : {
         "psr-4" : {
-            "DSLPAL\\" : "src/dslpal"
+            "DSLPAL\\" : "src/dslpal",
+            "Calendar\\" : "src/calendar"
         }
     },
     "require" : {

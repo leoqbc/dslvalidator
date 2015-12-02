@@ -8,7 +8,6 @@
 
 namespace DSLPAL;
 
-use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Validation;
 
 /**
@@ -57,7 +56,7 @@ class DSLValidator
         return $this;
     }
 
-    protected function getConstraint($constraint, $parameters)
+    public function getConstraint($constraint, $parameters)
     {
         $class = self::CONSTRAINT_NAMESPACE . ucfirst($constraint);
         $refClass = new \ReflectionClass($class);
@@ -67,13 +66,22 @@ class DSLValidator
     public function collection(array $asserts)
     {
         $collection = self::CONSTRAINT_NAMESPACE . 'Collection';
-        return $this->assertList = new $collection($asserts);
+        foreach ($asserts as $field => $assert) {
+            $asserts[$field] = $assert instanceof DSLValidator? $assert->getAssertList() : $assert;
+        }
+        $this->assertList = new $collection($asserts);
+        return clone $this;
     }
 
     public function validate($value)
     {
         $violations = $this->validator->validate($value, $this->assertList);
         return $violations;
+    }
+
+    public function getAssertList()
+    {
+        return $this->assertList;
     }
 
     public function end()
